@@ -30,6 +30,8 @@ def showimg(pic_num, noise_label_info, address, pic_prefix = '/mnt/intel/artifac
         print('not correct picture number')         
 
 def show_groundtruth_img(gt_data, index, address='groundtruthimages',pic_prefix = '/mnt/intel/artifact_management/plusai_2d_dataset/revised/front/train/images/'):
+    if isinstance(gt_data, dict) and 'labeling' in gt_data.keys():
+        gt_data = gt_data['labeling']
     path = os.path.join(pic_prefix, gt_data[index]['filename'])
     image = cv2.imread(path)
     for anno in gt_data[index]['annotations']:
@@ -65,7 +67,7 @@ def generate_compare_images(pic_num:str, noise_label_info:dict, gt_data:dict, pr
     img_path = os.path.join(pic_prefix, noise_label_info[pic_num]['img_id'])
     img = cv2.imread(img_path)
 
-    if 'labeling' in gt_data.keys():
+    if isinstance(gt_data, dict) and 'labeling' in gt_data.keys():
         gt_data = gt_data['labeling']
 
     #Label the image with ground truth annotation
