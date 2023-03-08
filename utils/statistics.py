@@ -8,7 +8,8 @@ def classify(noise_label_info : dict) -> tuple[int, int, int]:#do statistics on 
         for pblm in noise_label_info[pic_num]['problems']:
             if pblm == 'FP': fp += 1
             elif pblm == 'FN': fn += 1
-            else: lab += 1
+            if 'La' in pblm:
+                lab += 1
     return fp, fn, lab
 
 def merge_noisy_info_files(*json_files): #Merge different json file with different classes together
