@@ -94,7 +94,7 @@ def compare_vehicles(pred_data : dict, gt_data : dict, args: list) -> tuple[dict
         unvisited_index = np.where(visited == 0)[0]
         for uidx in unvisited_index:
             cx, cy, wp, hp = pred_box_info[uidx]
-            if LABEL_MAPPING[classes[uidx]] not in vehicle_class or wp <= sw + 5 or hp <= sh + 5:
+            if LABEL_MAPPING[classes[uidx]] not in vehicle_class or wp <= sw + 5 or hp <= sh + 5 or pred_data[pic_num]['occluded'][uidx][0] > 0.001:
                 continue
             if scores[uidx] > thres_con:
                 # surrounding = False
@@ -125,6 +125,7 @@ def compare_moto_vehicles(pred_data:dict, gt_data:dict, args:list)->tuple[dict, 
         visited = np.zeros(len(pred_box_info))
         included_gt = np.zeros(len(gt_img["annotations"])) #To check whether a box of motorcycle is inside a hasRider box(ground truth anno)
         included_pred = np.zeros(len(pred_box_info))#find those box(prediction anno) is inside a hasRider box
+        isoccluded = pred_data[pic_num]['occluded']
 
         #Detect whether a box inside a hasRider box
         for idx, anno in enumerate(gt_img["annotations"]):
@@ -207,7 +208,7 @@ def compare_moto_vehicles(pred_data:dict, gt_data:dict, args:list)->tuple[dict, 
         unvisited_index = np.where(visited == 0)[0]
         for uidx in unvisited_index:
             cx, cy, wp, hp = pred_box_info[uidx]
-            if LABEL_MAPPING[classes[uidx]] not in moto_class or wp <= sw or hp <= sh or included_pred[uidx]:
+            if LABEL_MAPPING[classes[uidx]] not in moto_class or wp <= sw + 3 or hp <= sh + 3 or included_pred[uidx] or isoccluded[uidx][0] > 0.001:
                 continue
             if scores[uidx] > thres_con:
                 saved_box_form = [cx - wp / 2, cy - hp / 2, wp, hp]
