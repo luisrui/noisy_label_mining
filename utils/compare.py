@@ -135,9 +135,10 @@ def compare_moto_vehicles(pred_data:dict, gt_data:dict, args:list)->tuple[dict, 
             if 'hasRider' in anno.keys() and anno['hasRider'] == True and LABEL_MAPPING[anno['class']] in moto_class and wg > sw and hg > sh:
                 JustBike, JustRider = False, False
                 for idx_oth, anno_oth in enumerate(gt_img['annotations']):
+                    if idx_oth == idx: continue;
                     lxo, lyo, wo, ho = anno_oth['x'], anno_oth['y'], anno_oth['width'], anno_oth['height']
                     cxo, cyo = lxo + wo / 2, lyo + ho / 2
-                    if anno_oth['class'] == anno['class'] and xg <= cxo <= xg + wg:
+                    if anno_oth['class'] == anno['class'] and xg <= cxo <= xg + wg + 5 and yg <= cyo <= yg + hg + 5:
                         JustBike = True
                         included_gt[idx_oth] = 1
                     elif (anno_oth['class'] == 'rider' or anno_oth == 'Rider') and xg <= cxo <= xg + wg:
